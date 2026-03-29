@@ -1,0 +1,10 @@
+{
+  "name": "School Management PWA",
+  "short_name": "SchoolPWA",
+  "description": "Mobile-first School Management System",
+  "display": "standalone",
+  "start_url": ".",
+  "theme_color": "#0f0e0c",
+  "background_color": "#0f0e0c"
+}
+

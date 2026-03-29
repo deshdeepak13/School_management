@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from 'react-router-dom';
 
-const Sidebar = ({ role, navSections, user }) => {
+const Sidebar = ({ role, navSections, user, onClose }) => {
     const navigate = useNavigate();
 
     const roleColors = {
@@ -13,7 +13,7 @@ const Sidebar = ({ role, navSections, user }) => {
     return (
         <nav className="sidebar">
             <div className="sidebar-top">
-                <div className="sidebar-logo" onClick={() => navigate('/')}>
+                <div className="sidebar-logo" onClick={() => { navigate('/'); if(onClose) onClose(); }}>
                     <div className="logo-mark">E</div>
                     <span className="logo-text">EduCore</span>
                 </div>
@@ -31,6 +31,7 @@ const Sidebar = ({ role, navSections, user }) => {
                                 key={j}
                                 to={item.path}
                                 end={item.end}
+                                onClick={onClose}
                                 className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
                             >
                                 <span className="nav-icon">{item.icon}</span>

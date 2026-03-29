@@ -1,6 +1,8 @@
 import { Outlet, useLocation, Link } from 'react-router-dom';
+import { useState } from 'react';
 import Sidebar from './Sidebar';
 import Topbar from './Topbar';
+import BottomNav from './BottomNav';
 
 const pageTitles = {
     // Admin
@@ -45,17 +47,35 @@ const pageTitles = {
 
 const AppLayout = ({ role, navSections, user }) => {
     const location = useLocation();
+    const [sidebarOpen, setSidebarOpen] = useState(false);
     const title = pageTitles[location.pathname] || 'Dashboard';
+    
+    // Non-admin roles will favor bottom navigation on mobile devices.
+    const showBottomNav = role !== 'admin';
+
+    const toggleSidebar = () => {
+        setSidebarOpen(!sidebarOpen);
+    };
 
     return (
-        <div className={`app-layout role-${role}`}>
-            <Sidebar role={role} navSections={navSections} user={user} />
+        <div className={`app-layout role-${role} ${sidebarOpen ? 'sidebar-open' : ''}`}>
+            {/* Desktop Sidebar, or Admin Mobile Sidebar */}
+            <Sidebar role={role} navSections={navSections} user={user} onClose={() => setSidebarOpen(false)} />
+            
+            {/* Sidebar toggle overlay for Mobile (Admins mostly) */}
+            {sidebarOpen && <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)}></div>}
+
             <div className="main-content">
-                <Topbar title={title} />
-                <div className="content">
+                <Topbar title={title} onMenuClick={toggleSidebar} showMenuBtn={role === 'admin'} />
+                <div className={`content ${showBottomNav ? 'has-bottom-nav' : ''}`}>
                     <Outlet />
                 </div>
             </div>
+
+            {/* Mobile Bottom Navigation for non-admins */}
+            {showBottomNav && <BottomNav role={role} navSections={navSections} />}
+            
+            {/* We will hide the back-btn on mobile standard view using CSS so it doesn't conflict with BottomNav */}
             <Link to="/" className="back-btn">
                 ← Switch Role
             </Link>
